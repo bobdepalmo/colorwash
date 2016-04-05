@@ -1,0 +1,17 @@
+{
+  "name": "colorwash.js",
+  "version": "1.0.0",
+  "description": "Cross browser color shifting gradients",
+  "main": "colorwash.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Bob DePalmo bob@depalmo.com",
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-sass": "^1.0.0",
+    "grunt-contrib-uglify": "^1.0.1",
+    "grunt-contrib-watch": "^1.0.0"
+  }
+}
