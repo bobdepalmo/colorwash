@@ -14,12 +14,19 @@ module.exports = function(grunt) {
 		uglify: {
 			development: {
         options: {
-          banner: '/*! some * shit here */\n'
+          banner: '/*\n * colorWash.js 1.0.0\n * https://github.com/bobdepalmo/colorwash.js\n * @license MIT licensed\n *\n * Copyright (C) 2016 depalmo.com - A project by Bob DePalmo\n */\n'
         },
 				files: {
 					'dist/colorwash.min.js' : ['src/colorwash.js']
 				}
 			}
+		},
+		copy: {
+		  development: {
+		    files: {
+          'dist/colorwash.js': 'src/colorwash.js'
+        }
+		  },
 		},
 		watch: {
 			sass: {
@@ -31,7 +38,7 @@ module.exports = function(grunt) {
 			},
 			js: {
         files: ['src/colorwash.js'],
-        tasks: ['uglify:development'],
+        tasks: ['uglify:development','copy:development'],
         options: {
           livereload: true
         }
@@ -40,12 +47,14 @@ module.exports = function(grunt) {
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-sass');
-	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-contrib-copy');
+	grunt.loadNpmTasks('grunt-contrib-watch');
 
 	grunt.registerTask('default', [
-		'uglify:development',
 		'sass:development',
+		'uglify:development',
+		'copy:development',
 		'watch'
   ]);
 };
