@@ -7,7 +7,7 @@ module.exports = function(grunt) {
 					style: 'compressed'
 				},
 				files: {
-					'demo/css/style.min.css' : 'demo/sass/style.scss'
+					'demo/assets/css/style.min.css' : 'demo/assets/sass/style.scss'
 				}
 			}
 		},
@@ -30,7 +30,7 @@ module.exports = function(grunt) {
 		},
 		watch: {
 			sass: {
-				files: ['demo/sass/style.scss'],
+				files: ['demo/assets/sass/style.scss'],
 				tasks: ['sass:development'],
 				options: {
 					livereload: true
@@ -39,6 +39,12 @@ module.exports = function(grunt) {
 			js: {
         files: ['src/colorwash.js'],
         tasks: ['uglify:development','copy:development'],
+        options: {
+          livereload: true
+        }
+      },
+      html: {
+        files: ['demo/index.html'],
         options: {
           livereload: true
         }
