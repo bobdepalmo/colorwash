@@ -23,20 +23,16 @@
     this.options = (arguments[0] && typeof arguments[0] === "object") ? extendDefaults(defaults, arguments[0]) : defaults;
   }
 
-  colorWash.prototype.init = function() {
-    this.theme();
-  }
-
-  colorWash.prototype.theme = function(callback) {
+  colorWash.prototype.init = function(callback) {
     var _ = this;
     if(Array.isArray(_.options.theme)){
-       _.build((_.options.invert) ? _.options.theme.reverse() : _.options.theme);
+      _.build((_.options.invert) ? _.options.theme.reverse() : _.options.theme);
     }else{
       this.loadJSON(_.options.file, function(response) {
         var key = _.options.theme;
         var data = JSON.parse(response);
         _.colors = (_.options.invert) ? data[key].reverse() : data[key];
-        _.build(_.colors);
+        _.build(colors);
       });   
     }
   }
@@ -53,35 +49,39 @@
     xobj.send(null);
   }
 
+  colorWash.prototype.gradient = function() {
+    var _ = this;
+    switch(_.options.type) {
+      case "radial":
+        return ["-webkit-radial-gradient(",  "-moz-radial-gradient(", "-o-radial-gradient(", "radial-gradient("];
+      break;
+      case "horizontal":
+       return ["-webkit-linear-gradient(left,", "-moz-linear-gradient(right,", "-o-linear-gradient(right,", "linear-gradient(right,"];
+      break;
+      case "vertical":
+        return ["-webkit-linear-gradient(", "-moz-linear-gradient(", "-o-linear-gradient(", "linear-gradient("];
+      break;
+      case "diagonal":
+        return ["-webkit-linear-gradient(left top,", "-moz-linear-gradient(bottom right,", "-o-linear-gradient(bottom right,", "linear-gradient(to bottom right,"];
+      break;
+    }
+  }
+
   colorWash.prototype.build = function(colors) {
     var _ = this;
     _.n = 0;
     _.colorIndices = [0, 1, 2, 3];
-    var el = document.querySelector(this.options.el);
-    el.style.opacity = this.options.opacity;
-    switch(this.options.type) {
-      case "radial":
-        _.gr = ["-webkit-radial-gradient(",  "-moz-radial-gradient(", "-o-radial-gradient(", "radial-gradient("];
-      break;
-      case "horizontal":
-        _.gr = ["-webkit-linear-gradient(left,", "-moz-linear-gradient(right,", "-o-linear-gradient(right,", "linear-gradient(right,"];
-      break;
-      case "vertical":
-        _.gr = ["-webkit-linear-gradient(", "-moz-linear-gradient(", "-o-linear-gradient(", "linear-gradient("];
-      break;
-      case "diagonal":
-        _.gr = ["-webkit-linear-gradient(left top,", "-moz-linear-gradient(bottom right,", "-o-linear-gradient(bottom right,", "linear-gradient(to bottom right,"];
-      break;
-    }
-      
-    _.gradientSpeed = this.options.steps / 1000;
-    _.update(colors, _.gr);
+    var el = document.querySelector(_.options.el);
+    el.style.opacity = _.options.opacity;
+    _.gr = _.gradient();   
+    _.gradientSpeed = _.options.steps / 1000;
+    _.run(colors, _.gr);
     _.timer = setInterval(function(){
-      _.update(colors, _.gr);
+      _.run(colors, _.gr);
     }, _.options.speed);
   }
 
-  colorWash.prototype.update = function(colors, gr) {
+  colorWash.prototype.run = function(colors, gr) {
     var _ = this;
     _.el = document.querySelector(_.options.el);
     _.a = colors[_.colorIndices[0]];
@@ -112,15 +112,26 @@
     }
   }
 
+  colorWash.prototype.update = function(theme) {
+    var _ = this;
+    this.loadJSON(_.options.file, function(response) {
+      var key = theme;
+      var data = JSON.parse(response);
+      colors = (_.options.invert) ? data[key].reverse() : data[key];
+      _.gr = _.gradient();
+      _.run(colors, _.gr);
+    });   
+  }
+
   colorWash.prototype.stop = function() {
     var _ = this;
     clearInterval(_.timer);
   }
 
-  colorWash.prototype.run = function() {
+  colorWash.prototype.start = function() {
     var _ = this;
     _.timer = setInterval(function(){
-      _.update(_.colors, _.gr);
+      _.run(_.colors, _.gr);
     }, _.options.speed);
   }
 
