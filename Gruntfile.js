@@ -30,7 +30,7 @@ module.exports = function(grunt) {
 		},
 		watch: {
 			sass: {
-				files: ['demo/assets/sass/style.scss'],
+				files: ['demo/assets/sass/*.scss'],
 				tasks: ['sass:development'],
 				options: {
 					livereload: true

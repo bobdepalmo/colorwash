@@ -8,7 +8,6 @@
 (function() {
 
   this.colorWash = function() {
-
     var defaults = {
         el: '.colorwash',
         steps: 2,
@@ -28,11 +27,11 @@
     if(Array.isArray(_.options.theme)){
       _.build((_.options.invert) ? _.options.theme.reverse() : _.options.theme);
     }else{
-      this.loadJSON(_.options.file, function(response) {
+      _.loadJSON(_.options.file, function(response) {
         var key = _.options.theme;
         var data = JSON.parse(response);
         _.colors = (_.options.invert) ? data[key].reverse() : data[key];
-        _.build(colors);
+        _.build(_.colors);
       });   
     }
   }
@@ -49,9 +48,10 @@
     xobj.send(null);
   }
 
-  colorWash.prototype.gradient = function() {
+  colorWash.prototype.gradient = function(type) {
     var _ = this;
-    switch(_.options.type) {
+    _.type = type;
+    switch(_.type) {
       case "radial":
         return ["-webkit-radial-gradient(",  "-moz-radial-gradient(", "-o-radial-gradient(", "radial-gradient("];
       break;
@@ -69,26 +69,28 @@
 
   colorWash.prototype.build = function(colors) {
     var _ = this;
+    _.colors = colors;
     _.n = 0;
     _.colorIndices = [0, 1, 2, 3];
     var el = document.querySelector(_.options.el);
     el.style.opacity = _.options.opacity;
-    _.gr = _.gradient();   
+    _.gr = _.gradient(_.options.type);   
     _.gradientSpeed = _.options.steps / 1000;
-    _.run(colors, _.gr);
+    _.run(_.colors, _.gr);
     _.timer = setInterval(function(){
-      _.run(colors, _.gr);
+      _.run(_.colors, _.gr);
     }, _.options.speed);
   }
 
   colorWash.prototype.run = function(colors, gr) {
     var _ = this;
+    _.colors = colors;
     _.el = document.querySelector(_.options.el);
-    _.a = colors[_.colorIndices[0]];
-    _.b = colors[_.colorIndices[1]];
-    _.c = colors[_.colorIndices[2]];
-    _.d = colors[_.colorIndices[3]];
-    _.e = 1 - this.n;
+    _.a = _.colors[_.colorIndices[0]];
+    _.b = _.colors[_.colorIndices[1]];
+    _.c = _.colors[_.colorIndices[2]];
+    _.d = _.colors[_.colorIndices[3]];
+    _.e = 1 - _.n;
       f = Math.round(_.e * _.a[0] + _.n * _.b[0]),
       g = Math.round(_.e * _.a[1] + _.n * _.b[1]),
       h = Math.round(_.e * _.a[2] + _.n * _.b[2]),
@@ -112,15 +114,26 @@
     }
   }
 
-  colorWash.prototype.update = function(theme) {
+  colorWash.prototype.updateTheme = function(theme) {
     var _ = this;
-    this.loadJSON(_.options.file, function(response) {
-      var key = theme;
-      var data = JSON.parse(response);
-      colors = (_.options.invert) ? data[key].reverse() : data[key];
-      _.gr = _.gradient();
-      _.run(colors, _.gr);
-    });   
+    _.theme = theme;
+    if(Array.isArray(_.theme)){
+      _.build((_.options.invert) ? _.theme.reverse() : _.theme);
+    }else{
+      this.loadJSON(_.options.file, function(response) {
+        var key = _.theme;
+        var data = JSON.parse(response);
+        _.colors = (_.options.invert) ? data[key].reverse() : data[key];
+        _.run(_.colors, _.gr);
+      });   
+    }
+  }
+
+  colorWash.prototype.updateGradient = function(type) {
+    var _ = this;
+    _.type = type;
+    _.gr = _.gradient(_.type);
+    _.run(_.colors, _.gr);
   }
 
   colorWash.prototype.stop = function() {

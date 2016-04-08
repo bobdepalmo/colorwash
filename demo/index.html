@@ -2,19 +2,19 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
 <title>ColorWash.js</title>
 <link rel="stylesheet" href="assets/css/style.min.css">
 </head>
 <body>
-<div id="wrapper" class="active">
+<div id="wrapper">
   <div class="copy">
     <h1>Colorwash.js</h1>
     <h2>cross browser color shifting css gradients</h2>
     <ul>
       <li><a href="">documentation</a></li>
-      <li><a href="">★ on github</a></li>
+      <li><a href="https://github.com/bobdepalmo/colorwash">★ on github</a></li>
     </ul>
-    <button onClick="cw.update('nine');">TESTO</button>
   </div>
   <div class="section">
     <div class="colorwash"></div>
@@ -22,20 +22,22 @@
 </div>
 <script src="/dist/colorwash.js"></script>
 <script type="text/javascript">
-  //window.onload = function() {
+    
     var cw = new colorWash({
-      opacity: 0.75,
+      opacity: 0.65,
       speed: 10,
-      invert: false,
-      theme: [
-        [255,255,0],
-        [0,0,255],
-        [0,255,0],
-        [0,255,255]
-      ]
+      type: "horizontal",
+      invert: true,
+      theme: "uber"
     });
+    
     cw.init();
-  //};
+
+    setTimeout(function(){
+      var el = document.getElementById('wrapper');
+      el.className = 'active';
+    },500);
+
 </script>
 </body>
 </html>
